@@ -4,6 +4,9 @@ import { AnimatePresence, motion } from 'framer-motion'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import AuthModal from './components/AuthModal'
+import CartDrawer from './components/CartDrawer'
+import { AuthProvider } from './context/AuthContext'
+import { CartProvider } from './context/CartContext'
 import Home from './pages/Home'
 import Nosotros from './pages/Nosotros'
 import Tiendas from './pages/Tiendas'
@@ -41,15 +44,25 @@ function AppRoutes() {
 
 export default function App() {
   const [authMode, setAuthMode] = useState(null)
+  const [cartOpen, setCartOpen] = useState(false)
 
   return (
-    <BrowserRouter>
-      <Navbar onOpenAuth={setAuthMode} />
-      <main>
-        <AppRoutes />
-      </main>
-      <Footer />
-      <AuthModal mode={authMode} onClose={() => setAuthMode(null)} onSwitch={setAuthMode} />
-    </BrowserRouter>
+    <AuthProvider>
+      <CartProvider>
+        <BrowserRouter>
+          <Navbar onOpenAuth={setAuthMode} onOpenCart={() => setCartOpen(true)} />
+          <main>
+            <AppRoutes />
+          </main>
+          <Footer />
+          <AuthModal mode={authMode} onClose={() => setAuthMode(null)} onSwitch={setAuthMode} />
+          <CartDrawer
+            open={cartOpen}
+            onClose={() => setCartOpen(false)}
+            onRequireLogin={() => setAuthMode('login')}
+          />
+        </BrowserRouter>
+      </CartProvider>
+    </AuthProvider>
   )
 }

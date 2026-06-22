@@ -191,7 +191,43 @@ directory `dist` → variables de entorno → dominio personalizado en
   real está controlado por las políticas RLS definidas en `schema.sql`.
 - Nunca expongas la `service_role key` en el frontend.
 
-## 9. Alcance del proyecto (según el informe EFSRT V)
+## 9. Sesión de usuario y carrito de pedido
+
+- **`src/context/AuthContext.jsx`** — mantiene la sesión del usuario en toda
+  la app (escucha los cambios de Supabase Auth). El Navbar usa este
+  contexto para mostrar "Ingresar/Registrarse" o el nombre del usuario con
+  un menú para cerrar sesión, según corresponda.
+- **`src/context/CartContext.jsx`** — el carrito de pedido. Se guarda en
+  `localStorage` del navegador (separado por usuario, o como "invitado" si
+  no hay sesión), así que no se pierde si recargas la página.
+- **`src/components/CartDrawer.jsx`** — el panel del carrito (ícono de
+  bolsa en el Navbar, con contador). Permite ajustar cantidades, quitar
+  productos, y dos formas de confirmar el pedido:
+  1. **"Confirmar pedido"** — requiere haber iniciado sesión; guarda el
+     pedido en las tablas `orders` y `order_items` de Supabase.
+  2. **"Coordinar por WhatsApp"** — abre WhatsApp con el pedido ya escrito,
+     sin necesidad de iniciar sesión.
+
+Importante: **no hay pago en línea ni precios mostrados** — el carrito es
+un "armador de pedido": el cliente elige variedades y cantidades, y el
+precio/entrega se coordina directamente con la heladería, igual que el
+código promocional. Esto respeta el alcance académico del proyecto
+(ver punto 10), evitando implementar una pasarela de pagos real.
+
+### Activar las tablas de pedidos en Supabase
+
+Si ya ejecutaste `schema.sql` antes, solo falta ejecutar **una vez más**
+este archivo adicional (no afecta lo que ya tienes):
+
+1. Ve a **SQL Editor → New query** en tu proyecto de Supabase.
+2. Copia y pega todo el contenido de
+   [`supabase/migration_orders.sql`](./supabase/migration_orders.sql).
+3. Click en **Run**.
+
+Esto crea las tablas `orders` y `order_items`, con seguridad (RLS) para
+que cada usuario solo pueda ver y crear sus propios pedidos.
+
+## 10. Alcance del proyecto (según el informe EFSRT V)
 
 Dentro del alcance: página principal, secciones institucionales, productos
 y promociones informativos, ubicación de sedes con mapa, formulario de

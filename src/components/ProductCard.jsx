@@ -1,4 +1,7 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { Check, Plus } from 'lucide-react'
+import { useCart } from '../context/CartContext'
 
 const colorClasses = {
   mora: 'bg-mora text-cream',
@@ -7,6 +10,15 @@ const colorClasses = {
 }
 
 export default function ProductCard({ product }) {
+  const { addItem } = useCart()
+  const [added, setAdded] = useState(false)
+
+  const handleAdd = () => {
+    addItem(product)
+    setAdded(true)
+    setTimeout(() => setAdded(false), 1200)
+  }
+
   return (
     <motion.article
       whileHover={{ y: -8 }}
@@ -21,12 +33,16 @@ export default function ProductCard({ product }) {
       <div className="p-5 flex flex-col gap-2 flex-1">
         <h3 className="font-display font-bold text-lg text-ink">{product.nombre}</h3>
         <p className="text-sm text-ink/70 flex-1">{product.descripcion}</p>
-        <a
-          href="/contacto"
-          className="focus-ring mt-3 inline-flex items-center justify-center rounded-full border border-ink/15 px-4 py-2 text-sm font-semibold text-ink hover:bg-ink hover:text-cream transition-colors"
+        <motion.button
+          whileTap={{ scale: 0.96 }}
+          onClick={handleAdd}
+          className={`focus-ring mt-3 inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+            added ? 'bg-selva text-cream' : 'border border-ink/15 text-ink hover:bg-ink hover:text-cream'
+          }`}
         >
-          Pedir ahora
-        </a>
+          {added ? <Check size={16} /> : <Plus size={16} />}
+          {added ? 'Agregado' : 'Agregar al pedido'}
+        </motion.button>
       </div>
     </motion.article>
   )

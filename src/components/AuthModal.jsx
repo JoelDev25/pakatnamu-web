@@ -36,6 +36,7 @@ export default function AuthModal({ mode, onClose, onSwitch }) {
         })
         if (error) throw error
         setStatus({ loading: false, error: '', success: '¡Bienvenido de nuevo!' })
+        setTimeout(() => onClose(), 800)
       } else {
         const { error } = await supabase.auth.signUp({
           email: form.correo,
@@ -46,6 +47,7 @@ export default function AuthModal({ mode, onClose, onSwitch }) {
         })
         if (error) throw error
         setStatus({ loading: false, error: '', success: 'Cuenta creada. Revisa tu correo para confirmar.' })
+        setTimeout(() => onClose(), 2200)
       }
     } catch (err) {
       setStatus({ loading: false, error: err.message ?? 'Ocurrió un error, intenta de nuevo.', success: '' })
