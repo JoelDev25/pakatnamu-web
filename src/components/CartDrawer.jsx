@@ -38,7 +38,6 @@ export default function CartDrawer({ open, onClose, onRequireLogin }) {
     if (!isSupabaseConfigured) {
       setTimeout(() => {
         setStatus({ loading: false, error: '', success: true })
-        clear()
       }, 600)
       return
     }
@@ -69,7 +68,7 @@ export default function CartDrawer({ open, onClose, onRequireLogin }) {
     }
 
     setStatus({ loading: false, error: '', success: true })
-    clear()
+    
   }
 
   return (
